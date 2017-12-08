@@ -1,0 +1,7 @@
+players:
+    student:
+      working_dir: /home/martin/repos/client
+controller:
+  torcs_config_file: quickrace.xml
+rater:
+  filename: ./ratings.csv
