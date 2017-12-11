@@ -35,8 +35,9 @@ class TwoLayerNet(torch.nn.Module):
         x: input vector.
         return: prediction.
         '''
-        h_lin = F.tanh(self.linear1(x))
-        y_pred = self.linear2(h_lin)
+        x = x.view(1, -1)
+        h_lin = F.tanh(self.linear1(x)).view(1, -1)
+        y_pred = self.linear2(h_lin).view(1, -1)
         return y_pred
 
 class TorchTrainer():

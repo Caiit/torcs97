@@ -13,7 +13,7 @@ import os
 # If both False, we use a neural net, either given by initialisation or by
 # loading our model for the none-blocking car.
 TRAIN = False
-SWARM = False
+SWARM = True
 
 class MyDriver(Driver):
     '''
@@ -203,7 +203,7 @@ class MyDriver(Driver):
         '''
         # Get output from model
         x = torch.from_numpy(np_car)
-        y = model(Variable(x.float())).data.numpy()
+        y = model(Variable(x.float())).data.numpy()[0]
         # Prevent from driving really slow
         if (y[1] * 306 < 10): y[1] = 40 / 306
 
