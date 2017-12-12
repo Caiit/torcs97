@@ -80,16 +80,24 @@ class MyDriver(Driver):
         If we are just using a network:
         Use the model to predict the output based on the car state as input.
         """
+        global SWARM
         if (TRAIN):
             command = self.trainDrive(carstate)
         elif (SWARM):
-            # If first run, set helper file name
+            # If first run, set teammate file name
             if (self.start):
                 for f in os.listdir("./positions/"):
                     if str(self.port) not in f:
                         self.helper_pos_filename = "./positions/" + f
                         break
                 self.start = False
+                # If no teammate, don't use swarm
+                if self.helper_pos_filename == "./positions/pos":
+                    SWARM = False
+                    self.model = TwoLayerNet(22, 15, 2, False)
+                    self.model.load_state_dict(torch.load("./models/model_without_blocking_22.pt", map_location=lambda storage, loc: storage))
+                    np_car = self.carstateToNumpy(carstate, "winner")
+                    return self.modelDrive(self.model, carstate, np_car)
 
             # Write own position to file
             own_pos_file = open(self.own_pos_filename, "w")
@@ -270,5 +278,7 @@ class MyDriver(Driver):
         positions files.
         '''
         Driver.on_shutdown(self)
-        if (SWARM):
-            os.remove(self.own_pos_filename, dir_fd=None)
+        # if (SWARM):
+        #     os.remove(self.own_pos_filename, dir_fd=None)
+        for f in os.listdir("./positions/"):
+            os.remove("./positions/" + f)
